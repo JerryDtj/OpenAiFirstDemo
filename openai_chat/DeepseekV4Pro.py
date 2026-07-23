@@ -12,13 +12,13 @@ class DeepseekV4Pro:
 
 
     def __new__(cls):
-        if not os.environ.get("openai_api_key"):
-            raise ValueError("openai_api_key为空,请检查环境变量是否配置")
+        if not os.environ.get("agicto_api_key"):
+            raise ValueError("oagicto_api_key为空,请检查环境变量是否配置")
         return super().__new__(cls)
 
 
     def __init__(self):
-        client = OpenAI(api_key = os.environ.get("openai_api_key"),base_url="https://api.deepseek.com")
+        client = OpenAI(api_key = os.environ.get("agicto_api_key"),base_url="https://api.agicto.cn/v1")
         self.client = client
 
     def task(self,question:str):
@@ -72,7 +72,7 @@ class DeepseekV4Pro:
         # 循环处理，直到模型不再要求调用工具
         while True:
             response = self.client.chat.completions.create(
-                model="DeepSeek-V4-Flash",
+                model="deepseek-v4-pro",
                 messages=messages,
                 tools=tools,
                 tool_choice="auto",
