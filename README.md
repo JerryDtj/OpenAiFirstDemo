@@ -15,7 +15,7 @@ pip install -r requirements.txt
 | 变量名 | 说明 |
 |--------|------|
 | `agicto_api_key` | Agicto 平台 API Key |
-| `QWEATHER_API_KEY` | 和风天气 API Key |
+| `WEATHER_API_KEY` | 和风天气 API Key |
 | `IPINFO_TOKEN` | ipinfo.io Access Token |
 
 ## 运行

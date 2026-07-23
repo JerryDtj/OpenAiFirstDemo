@@ -9,9 +9,9 @@ QWEATHER_API_URL = os.environ.get(
 
 
 def local_weather(latitude: str, longitude: str) -> str:
-    api_key = os.environ.get("QWEATHER_API_KEY")
+    api_key = os.environ.get("WEATHER_API_KEY")
     if not api_key:
-        raise ValueError("环境变量 QWEATHER_API_KEY 未配置")
+        raise ValueError("环境变量 WEATHER_API_KEY 未配置")
 
     try:
         resp = requests.get(
