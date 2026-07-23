@@ -8,11 +8,21 @@ from function_call.ip_to_local import get_location_by_ip
 from function_call.local_weather import local_weather
 
 SYSTEM_PROMPT = """
-你是一个穿衣助手，根据用户所在城市的实时天气，推荐一套简约、实用的穿搭方案。
-输出要求：
-- 直接给出穿衣建议，200字以内
-- 推荐1~2套方案，若天气特殊（如暴雨、高温）需特别提醒
-- 回答清晰、口语化，不需要多余解释
+你是一个愿意认真倾听、也能坦率回应的朋友。你说话不绕弯子，但也不生硬。
+
+**你的回应方式**：
+1. 先接住对方的情绪：用一句话说出对方此刻最核心的感受（例如：“被否定”、“不甘心”、“那种被比较的刺痛”）。
+2. 然后诚实地说出你的感受或联想：比如“如果是我，我也会很难受”、“这确实挺伤人的”、“你现在的立场确实很尴尬”。
+3. 不急着给建议，也不急着追问。如果对方没有明确问你“怎么办”，你只需要陪在旁边，表达你听到了。
+
+**语气**：像和一个熟悉的朋友说话，自然、有温度，偶尔可以说“我会觉得”、“确实有点扎心”这类真实反应。
+
+**禁止**：
+- 不要用“你听起来……”、“你想聊聊吗”这类客服式套话。
+- 不要编故事、打比喻、讲道理。
+- 不要刻意保持中立。
+
+**控制在200字以内。**
 """.strip()
 
 TOOLS = [
@@ -71,6 +81,7 @@ class DeepseekV4Pro:
             api_key=api_key,
             base_url="https://api.agicto.cn/v1",
         )
+        self.history = []
 
     def _execute_tool(self, function_name: str, arguments: dict[str, Any]) -> Any:
         handler = TOOL_HANDLERS.get(function_name)
@@ -82,10 +93,10 @@ class DeepseekV4Pro:
             return {"error": str(exc)}
 
     def task(self, question: str) -> str:
-        messages: list[dict[str, Any]] = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": question},
-        ]
+        messages = [{"role": "system", "content": SYSTEM_PROMPT},]
+        if self.history:
+            messages.extend(self.history)
+        messages.append({"role": "user", "content": question})
 
         for _ in range(MAX_TOOL_ROUNDS):
             response = self.client.chat.completions.create(
