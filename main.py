@@ -1,27 +1,29 @@
-# 这是一个示例 Python 脚本。
-import os
+"""天气穿衣助手 - 基于 DeepSeek V4 Pro 的 Function Calling Demo."""
+
+import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 from openai_chat.DeepseekV4Pro import DeepseekV4Pro
 
-
-# 按 ⌃R 执行或将其替换为您的代码。
-# 按 双击 ⇧ 在所有地方搜索类、文件、工具窗口、操作和设置。
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 
-def print_hi(name):
-    # 在下面的代码行中使用断点来调试脚本。
-    print(f'Hi, {name}')  # 按 ⌘F8 切换断点。
-
-
-# 按装订区域中的绿色按钮以运行脚本。
-if __name__ == '__main__':
-    question = input("天气助手已启动,请输入您的问题: ")
+def main() -> None:
+    question = input("天气助手已启动，请输入您的问题: ")
     print("\n正在思考，请稍候...\n")
-    dk = DeepseekV4Pro()
 
-    
-    response = dk.task(question)
-    print(response)
+    try:
+        assistant = DeepseekV4Pro()
+        print(assistant.task(question))
+    except ValueError as exc:
+        print(f"配置错误: {exc}", file=sys.stderr)
+        sys.exit(1)
+    except RuntimeError as exc:
+        print(f"运行出错: {exc}", file=sys.stderr)
+        sys.exit(1)
 
 
-# 访问 https://www.jetbrains.com/help/pycharm/ 获取 PyCharm 帮助
+if __name__ == "__main__":
+    main()

@@ -1,18 +1,34 @@
+import os
+
 import requests
 
+QWEATHER_API_URL = os.environ.get(
+    "QWEATHER_API_URL",
+    "https://ng6yw3a6wn.re.qweatherapi.com/v7/weather/now",
+)
 
 
 def local_weather(latitude: str, longitude: str) -> str:
-    url = "https://ng6yw3a6wn.re.qweatherapi.com/v7/weather/now"
-    params = {
-        "location": f"{longitude},{latitude}",  # 注意顺序
-        "key": "a45f067ca38548789a2788b209c78c7f"
-    }
-    resp = requests.get(url, params=params, timeout=3)
-    data = resp.json()
-    temp = data['now']['temp']
-    wind = data['now']['windSpeed']
-    print(f"当前天气: {temp}°C, 风速: {wind} km/h")
-    return f"当前天气: {temp}°C, 风速: {wind} km/h"
+    api_key = os.environ.get("QWEATHER_API_KEY")
+    if not api_key:
+        raise ValueError("环境变量 QWEATHER_API_KEY 未配置")
 
-# local_weather(31.2222, 121.4581)
+    try:
+        resp = requests.get(
+            QWEATHER_API_URL,
+            params={
+                "location": f"{longitude},{latitude}",
+                "key": api_key,
+            },
+            timeout=5,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+    except requests.RequestException as exc:
+        return f"天气服务请求失败: {exc}"
+
+    if data.get("code") != "200":
+        return f"天气查询失败，错误码: {data.get('code', '未知')}"
+
+    now = data["now"]
+    return f"当前天气: {now['temp']}°C, 风速: {now['windSpeed']} km/h, 天气: {now.get('text', '未知')}"
