@@ -2,20 +2,20 @@ import os
 
 import requests
 
-QWEATHER_API_URL = os.environ.get(
-    "QWEATHER_API_URL",
-    "https://ng6yw3a6wn.re.qweatherapi.com/v7/weather/now",
-)
-
 
 def local_weather(latitude: str, longitude: str) -> str:
     api_key = os.environ.get("WEATHER_API_KEY")
     if not api_key:
         raise ValueError("环境变量 WEATHER_API_KEY 未配置")
 
+    api_url = os.environ.get(
+        "QWEATHER_API_URL",
+        "https://ng6yw3a6wn.re.qweatherapi.com/v7/weather/now",
+    )
+
     try:
         resp = requests.get(
-            QWEATHER_API_URL,
+            api_url,
             params={
                 "location": f"{longitude},{latitude}",
                 "key": api_key,

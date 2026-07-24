@@ -69,6 +69,7 @@ TOOL_HANDLERS: dict[str, Callable[[dict[str, Any]], Any]] = {
 }
 
 MAX_TOOL_ROUNDS = 10
+MAX_HISTORY_MESSAGES = 20
 
 
 class DeepseekV4Pro:
@@ -112,12 +113,19 @@ class DeepseekV4Pro:
 
             message = response.choices[0].message
             if not message.tool_calls:
+                self.history = messages[1:]
+                if len(self.history) > MAX_HISTORY_MESSAGES:
+                    self.history = self.history[-MAX_HISTORY_MESSAGES:]
                 return message.content or ""
 
             messages.append(message.model_dump())
 
             for tool_call in message.tool_calls:
-                arguments = json.loads(tool_call.function.arguments or "{}")
+                try:
+                    arguments = json.loads(tool_call.function.arguments or "{}")
+                except json.JSONDecodeError:
+                    return "无法解析工具调用参数，请重试"
+
                 result = self._execute_tool(tool_call.function.name, arguments)
                 messages.append(
                     {
