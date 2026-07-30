@@ -10,7 +10,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda
 from dotenv import load_dotenv
 from langgraph.checkpoint.memory import InMemorySaver
-from langchain_deepseek import ChatDeepseekPro
 
 
 load_dotenv()
@@ -106,7 +105,7 @@ openai_model = ChatOpenAI(
     streaming=True,
 )
 
-# openai_model = ChatDeepseekPro(
+# openai_model = ChatDeepseek(
 #     model = "deepseek-v4-pro",
 #     api_key=api_key,
 #     streaming=True,
