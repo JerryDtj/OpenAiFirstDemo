@@ -77,7 +77,7 @@ class get_local_by_ip:
 def get_joke() -> str:
     """ 获取一个笑话"""
     start_time = time.perf_counter()
-    url = "https://api.apihz.cn/getapi.php"
+    url = "https://cn.apihz.cn/api/zici/xiaohua.php"
     params = {
         "id": "10019601",
         "key": joke_api_key
@@ -99,7 +99,7 @@ language = address_tool.invoke(None)
 
 
 openai_model = ChatOpenAI(
-    model="deepseek-v4-pro",
+    model="deepseek-v4-flash",
     api_key=api_key,
     base_url="https://api.agicto.cn/v1",
     streaming=True,
