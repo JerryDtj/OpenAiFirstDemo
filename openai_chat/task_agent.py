@@ -1,6 +1,6 @@
 import os
-from functools import wraps
 import time
+from pathlib import Path
 
 from langchain_core.tools import tool
 import requests
@@ -11,8 +11,10 @@ from langchain_core.runnables import RunnableLambda
 from dotenv import load_dotenv
 from langgraph.checkpoint.memory import InMemorySaver
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SCRIPT_DIR.parent
 
-load_dotenv()
+load_dotenv(PROJECT_ROOT / ".env")
 api_key = os.getenv('agicto_api_key')
 joke_api_key = os.getenv('apihz_api_key')
 if not joke_api_key or joke_api_key.strip() == "":
@@ -119,7 +121,8 @@ print(f"openai_model.invoke 执行时间: {(time.perf_counter() - start_time)*10
 checkpointer = InMemorySaver()
 
 # 读取提示词, 用 ChatPromptTemplate.from_template() 替换 {language} 变量
-with open("小奴才系统提示词.md", "r", encoding="utf-8") as f:
+prompt_path = SCRIPT_DIR / "小奴才系统提示词.md"
+with open(prompt_path, "r", encoding="utf-8") as f:
     system_prompt = f.read()
 
 # ChatPromptTemplate 会自动扫描 {language} 变量, 不需要手动声明 input_variables
