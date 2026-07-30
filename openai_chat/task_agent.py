@@ -13,7 +13,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 
 
 load_dotenv()
-api_key = os.getenv('openai_api_key')
+api_key = os.getenv('agicto_api_key')
 joke_api_key = os.getenv('apihz_api_key')
 if not joke_api_key or joke_api_key.strip() == "":
     raise ValueError("key is not set")
@@ -111,7 +111,7 @@ openai_model = ChatOpenAI(
 #     streaming=True,
 # )
 
-#start_time = time.perf_counter()
+start_time = time.perf_counter()
 openai_model.invoke("你好")
 print(f"openai_model.invoke 执行时间: {(time.perf_counter() - start_time)*1000:.1f} 毫秒")
 
