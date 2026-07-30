@@ -17,3 +17,6 @@ def get_location_by_ip() -> dict:
         "latitude": latitude,
         "longitude": longitude,
     }
+
+if __name__ == "__main__":
+    print(get_location_by_ip())

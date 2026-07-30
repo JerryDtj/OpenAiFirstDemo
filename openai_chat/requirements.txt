@@ -1,0 +1,5 @@
+langchain==1.0.2
+langchain-core==1.5.1
+langchain-community==0.4
+langchain-openai==1.4.1
+google-search-results

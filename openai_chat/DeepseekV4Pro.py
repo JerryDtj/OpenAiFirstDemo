@@ -2,6 +2,10 @@ import json
 import os
 from typing import Any, Callable
 
+from anyio.lowlevel import checkpoint
+from langchain.agents import create_agent
+from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import InMemorySaver
 from openai import OpenAI
 
 from function_call.ip_to_local import get_location_by_ip
@@ -78,11 +82,12 @@ class DeepseekV4Pro:
         if not api_key:
             raise ValueError("agicto_api_key 为空，请检查环境变量是否配置")
 
-        self.client = OpenAI(
+        self.model = ChatOpenAI(
+            model="deepseek-v4-pro",
             api_key=api_key,
             base_url="https://api.agicto.cn/v1",
         )
-        self.history = []
+        self.history = {}
 
     def _execute_tool(self, function_name: str, arguments: dict[str, Any]) -> Any:
         handler = TOOL_HANDLERS.get(function_name)
@@ -94,6 +99,16 @@ class DeepseekV4Pro:
             return {"error": str(exc)}
 
     def task(self, question: str) -> str:
+        stoy = {}
+        checkpoint = InMemorySaver(lambda )
+        openai_agent = create_agent(
+            llm=self.model,
+        )
+
+
+
+
+
         messages = [{"role": "system", "content": SYSTEM_PROMPT},]
         if self.history:
             messages.extend(self.history)
